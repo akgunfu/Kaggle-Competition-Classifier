@@ -8,8 +8,8 @@ class data_manager():
 
     def __init__(self):
         # Read Test and Training Data From the Given Path
-        self.train_df = pd.read_csv('./data/train.csv')
-        self.test_df = pd.read_csv('./data/test.csv')
+        self.train_df = pd.read_csv('../data/train.csv')
+        self.test_df = pd.read_csv('../data/test.csv')
 
     # Return to Input X and Output Y
     def get_data(self):
@@ -23,9 +23,3 @@ class data_manager():
         Y = np_utils.to_categorical(encoded_y).astype(int)  # Binarization of Label Values
 
         return (X,Y)
-
-dm = data_manager()
-x,y = dm.get_data()
-
-print(x)
-print(y)
