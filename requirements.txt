@@ -1,0 +1,7 @@
+python 3.5.0
+pandas
+numpy+mkl
+scipy
+scikit-learn
+keras
+tensorflow
