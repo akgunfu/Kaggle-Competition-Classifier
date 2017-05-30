@@ -19,7 +19,12 @@ class data_manager():
         encoder.fit(y)
         encoded_y = encoder.transform(y)
 
+        X_test = self.test_df.drop('id', axis = 1).values
         X = self.train_df.drop(['id', 'target'], axis = 1).values
         Y = np_utils.to_categorical(encoded_y).astype(int)  # Binarization of Label Values
 
-        return (X,Y)
+        return (X, Y, encoder)
+
+
+    def get_test_data(self):
+        return self.test_df.drop('id', axis = 1).values
