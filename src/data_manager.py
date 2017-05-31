@@ -25,6 +25,6 @@ class data_manager():
 
         return (X, Y, encoder)
 
-
+    # Return to Test Data
     def get_test_data(self):
         return self.test_df.drop('id', axis = 1).values

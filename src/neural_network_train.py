@@ -1,18 +1,22 @@
-import numpy as np
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.wrappers.scikit_learn import KerasClassifier
 from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import KFold
+
+import numpy as np
+
 from src.data_manager import data_manager
 
+# Getting X,Y data and Encoder for Labels
 dm = data_manager()
 X, Y, encoder = dm.get_data()
-X_Test = dm.get_test_data()
 
+# Random State Seed
 seed = 7
 np.random.seed(seed)
 
+# A function to build a model, model is initialized outside of function to be able to reference model from anywhere
 model = Sequential()
 def network_model():
     model.add(Dense(100, input_dim=93, kernel_initializer='normal', activation='relu'))
@@ -20,7 +24,8 @@ def network_model():
     model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
     return model
 
-estimator = KerasClassifier(build_fn=network_model, epochs=50, batch_size=20, verbose=1)
+# Set up Estimator and Train System, Evaluate with KFold Cross Validation
+estimator = KerasClassifier(build_fn=network_model, epochs=50, batch_size=20, verbose=0)
 kfold = KFold(n_splits=10, shuffle=True, random_state=seed)
 results = cross_val_score(estimator, X, Y, cv=kfold)
 print("Accuracy: %.2f%% (%.2f%%)" % (results.mean()*100, results.std()*100))
@@ -30,5 +35,3 @@ model_json = model.to_json()
 with open("./models/keras_model.json", "w") as json_file:
     json_file.write(model_json)
 model.save_weights("./models/keras_weights.h5")
-
-
