@@ -19,13 +19,13 @@ np.random.seed(seed)
 # A function to build a model, model is initialized outside of function to be able to reference model from anywhere
 model = Sequential()
 def network_model():
-    model.add(Dense(100, input_dim=93, kernel_initializer='normal', activation='relu'))
+    model.add(Dense(30, input_dim=30, kernel_initializer='normal', activation='sigmoid'))
     model.add(Dense(9, kernel_initializer='normal', activation='softmax'))
     model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
     return model
 
 # Set up Estimator and Train System, Evaluate with KFold Cross Validation
-estimator = KerasClassifier(build_fn=network_model, epochs=50, batch_size=20, verbose=0)
+estimator = KerasClassifier(build_fn=network_model, epochs=15, batch_size=30, verbose=1)
 kfold = KFold(n_splits=10, shuffle=True, random_state=seed)
 results = cross_val_score(estimator, X, Y, cv=kfold)
 print("Accuracy: %.2f%% (%.2f%%)" % (results.mean()*100, results.std()*100))
