@@ -10,7 +10,7 @@ from src.data_manager import data_manager
 
 # Getting X,Y data and Encoder for Labels
 dm = data_manager()
-X, Y, encoder = dm.get_data()
+X_pca, X, Y, encoder = dm.get_data()
 
 # Random State Seed
 seed = 7
@@ -19,16 +19,17 @@ np.random.seed(seed)
 # A function to build a model, model is initialized outside of function to be able to reference model from anywhere
 model = Sequential()
 def network_model():
-    model.add(Dense(30, input_dim=30, kernel_initializer='normal', activation='sigmoid'))
+    model.add(Dense(90, input_dim=90, kernel_initializer='normal', activation='sigmoid'))
+    model.add(Dense(90, kernel_initializer='normal', activation='sigmoid'))
     model.add(Dense(9, kernel_initializer='normal', activation='softmax'))
     model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
     return model
 
 # Set up Estimator and Train System, Evaluate with KFold Cross Validation
-estimator = KerasClassifier(build_fn=network_model, epochs=15, batch_size=30, verbose=1)
+estimator = KerasClassifier(build_fn=network_model, epochs=20, batch_size=25, verbose=1)
 kfold = KFold(n_splits=10, shuffle=True, random_state=seed)
-results = cross_val_score(estimator, X, Y, cv=kfold)
-print("Accuracy: %.2f%% (%.2f%%)" % (results.mean()*100, results.std()*100))
+results = cross_val_score(estimator, X_pca, Y, cv=kfold)
+print("\n\nAccuracy: %.2f%% (%.2f%%)" % (results.mean()*100, results.std()*100))
 
 # Save Model to Disk
 model_json = model.to_json()

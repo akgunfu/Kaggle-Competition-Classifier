@@ -12,7 +12,7 @@ class data_manager():
         # Read Test and Training Data From the Given Path
         self.train_df = pd.read_csv('../data/train.csv')
         self.test_df = pd.read_csv('../data/test.csv')
-        self.reduce = 30
+        self.reduce = 90
 
     # Return to Input X and Output Y
     def get_data(self):
@@ -27,9 +27,9 @@ class data_manager():
         X = scale(X)
         pca = PCA(n_components=self.reduce)
         pca.fit(X)
-        X_reduced = pca.fit_transform(X)
+        X_pca = pca.fit_transform(X)
 
-        return (X_reduced, Y, encoder)
+        return (X_pca, X, Y, encoder)
 
     # Return to Test Data
     def get_test_data(self):
@@ -37,5 +37,5 @@ class data_manager():
         X_test = scale(X_test)
         pca = PCA(n_components=self.reduce)
         pca.fit(X_test)
-        X_test_reduced = pca.fit_transform(X_test)
-        return X_test_reduced
+        X_test_pca = pca.fit_transform(X_test)
+        return (X_test_pca, X_test)

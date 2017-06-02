@@ -11,8 +11,8 @@ from src.data_manager import data_manager
 
 # Getting Test data and Label Encoder
 dm = data_manager()
-X_Test = dm.get_test_data()
-_, _, encoder_y = dm.get_data()
+X_Test_pca, _ = dm.get_test_data()
+_, _, _, encoder_y = dm.get_data()
 
 # Load model from file
 json_file = open('./models/keras_model.json', 'r')
@@ -22,13 +22,12 @@ model = model_from_json(loaded_model_json)
 model.load_weights("./models/keras_weights.h5")
 
 # Make Predictions for Test Data, Decode Them Into String Classes, Encode to Binary Matrix Again to Print
-predictions_raw = model.predict(X_Test)
+predictions_raw = model.predict(X_Test_pca)
 encoded_labels = np.argmax(predictions_raw, axis = 1)
 decoded = encoder_y.inverse_transform(encoded_labels)
-print(decoded)
 encoded_y = encoder_y.transform(decoded)
 final = np_utils.to_categorical(encoded_y).astype(int)
-print(final)
+
 # Create a Pandas.DataFrame to Represent Data
 N = final.shape[0]
 print(final.shape)
@@ -36,7 +35,7 @@ index = np.arange(0,N,1)
 id = index + 1
 columns = (['Class_1', 'Class_2', 'Class_3', 'Class_4', 'Class_5', 'Class_6', 'Class_7', 'Class_8', 'Class_9'])
 
-dataframe = pd.DataFrame(data=final, index=index, columns = columns)
+dataframe = pd.DataFrame(data=predictions_raw, index=index, columns = columns)
 dataframe['id'] = pd.Series(id, index=dataframe.index)
 
 # Rearrange Columns
